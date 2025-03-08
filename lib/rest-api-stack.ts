@@ -43,16 +43,18 @@ export class RestAPIStack extends cdk.Stack {
       "GetMovieByIdFn",
       {
         architecture: lambda.Architecture.ARM_64,
-        runtime: lambda.Runtime.NODEJS_18_X,
+        runtime: lambda.Runtime.NODEJS_22_X,
         entry: `${__dirname}/../lambdas/getMovieById.ts`,
         timeout: cdk.Duration.seconds(10),
         memorySize: 128,
         environment: {
           TABLE_NAME: moviesTable.tableName,
-          REGION: 'eu-west-1',
+          CAST_TABLE_NAME: movieCastsTable.tableName, 
+          REGION: "eu-west-1",
         },
       }
     );
+    
 
     const getAllMoviesFn = new lambdanode.NodejsFunction(
       this,
@@ -182,6 +184,7 @@ movieCastEndpoint.addMethod(
     moviesTable.grantReadWriteData(newMovieFn)
     moviesTable.grantWriteData(deleteMovieFn);
     movieCastsTable.grantReadData(getMovieCastMembersFn);
+    movieCastsTable.grantReadData(getMovieByIdFn);
 
 
 
